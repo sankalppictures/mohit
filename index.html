@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Forever Love</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Define a custom font for a romantic, scripted feel */
+        @import url('https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap');
+        
+        .romantic-font {
+            font-family: 'Great Vibes', cursive;
+        }
+
+        /* Essential styling for the full-screen video background */
+        .video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2; /* Place behind the content */
+            overflow: hidden;
+        }
+
+        .video-background iframe {
+            width: 300vw;
+            height: 300vh;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            /* Center the video and ensure it covers the screen */
+            transform: translate(-50%, -50%);
+            pointer-events: none; /* Prevents interaction with the iframe */
+        }
+        
+        /* Overlay to darken the video and ensure text readability */
+        .content-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4); /* Dark overlay */
+            z-index: -1;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white min-h-screen flex flex-col items-center justify-center p-4">
+
+    <!-- 1. Video Background Container -->
+    <div class="video-background">
+        <!-- YouTube Embed URL for Short ID: -NOki16sHHU -->
+        <!-- Parameters: autoplay=1, loop=1, muted=1 (to bypass autoplay block), and playlist=ID (required for looping) -->
+        <!-- Note: User interaction is required to unmute the video. -->
+        <iframe 
+            id="bgVideo"
+            src="https://www.youtube.com/embed/-NOki16sHHU?autoplay=1&loop=1&playlist=-NOki16sHHU&mute=1&controls=0&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3" 
+            frameborder="0" 
+            allow="autoplay; encrypted-media" 
+            allowfullscreen>
+        </iframe>
+    </div>
+    
+    <!-- Dark Content Overlay -->
+    <div class="content-overlay"></div>
+
+    <!-- Main Content Area -->
+    <div class="z-10 text-center max-w-lg w-full bg-white bg-opacity-10 backdrop-blur-sm p-6 sm:p-10 rounded-xl shadow-2xl border border-pink-300/30">
+        
+        <!-- Main Romantic Title -->
+        <h1 class="romantic-font text-5xl sm:text-7xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-300 to-red-400 mb-6">
+            My Only One
+        </h1>
+
+        <!-- Image (The Logo/Centerpiece) -->
+        <div class="mb-8">
+            <img 
+                id="mainImage"
+                src="https://i.ibb.co/QjxFWC2J/1762664188791.jpg" 
+                alt="A beautiful romantic moment" 
+                class="w-32 h-32 sm:w-48 sm:h-48 object-cover rounded-full mx-auto shadow-2xl border-4 border-white/50 hover:scale-105 transition duration-300 ease-in-out"
+                onerror="this.onerror=null; this.src='https://placehold.co/192x192/fbcfe8/be185d?text=Image+Missing'"
+            >
+        </div>
+
+        <!-- Dynamic Counters -->
+        <div class="space-y-4 text-gray-100">
+            
+            <!-- Days Together Counter (Set Your Date!) -->
+            <p class="text-lg sm:text-2xl font-semibold bg-pink-500/20 p-3 rounded-lg">
+                We've been together for: <br>
+                <span id="days-together" class="text-3xl sm:text-5xl font-extrabold text-red-300 romantic-font">...</span> days
+            </p>
+
+            <!-- Session View Count -->
+            <p class="text-sm sm:text-base font-medium text-pink-200">
+                You've viewed this page <span id="view-count" class="font-bold text-red-300">1</span> time(s) during this visit.
+            </p>
+        </div>
+
+        <!-- Unmute Button (Required for Autoplay Audio) -->
+        <div id="unmute-container" class="mt-8">
+            <button 
+                id="unmute-button"
+                class="bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-6 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:scale-105 flex items-center justify-center mx-auto"
+                onclick="unmuteVideo()"
+            >
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 mr-2">
+                    <path d="M13.5 4.06c0-1.336-1.688-2.003-2.672-1.045l-4.226 4.226H3.375a1.125 1.125 0 0 0-1.125 1.125v7.243c0 .62.504 1.125 1.125 1.125h3.204l4.226 4.226c.984.958 2.672.291 2.672-1.045V4.06Z" />
+                    <path fill-rule="evenodd" d="M19.071 5.827a.75.75 0 1 0-1.06-.996 9.57 9.57 0 0 1 0 13.938.75.75 0 0 0 1.06-.996 8.07 8.07 0 0 0 0-11.946Z" clip-rule="evenodd" />
+                    <path fill-rule="evenodd" d="M22.394 7.078a.75.75 0 1 0-1.222-.857 12.01 12.01 0 0 1 0 11.666.75.75 0 0 0 1.222-.857 10.51 10.51 0 0 0 0-9.952Z" clip-rule="evenodd" />
+                </svg>
+                Enable Sound
+            </button>
+        </div>
+
+        <p class="mt-6 text-xs text-gray-400">
+            A website dedicated to our love.
+        </p>
+
+    </div>
+
+    <script>
+        // Set the official date you became a couple (YYYY-MM-DD)
+        const COUPLE_START_DATE = '2023-01-01'; // <-- CHANGE THIS DATE!
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- 1. Days Together Counter Logic ---
+            const startDate = new Date(COUPLE_START_DATE);
+            const today = new Date();
+            const timeDifference = today - startDate;
+            const daysTogether = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+            
+            const daysElement = document.getElementById('days-together');
+            if (daysElement) {
+                if (daysTogether > 0) {
+                    daysElement.textContent = daysTogether.toLocaleString();
+                } else {
+                    daysElement.textContent = '0'; // For the start day or if the date is in the future
+                }
+            }
+
+            // --- 2. Session View Count Logic ---
+            // We use sessionStorage to count views during the user's current session.
+            let viewCount = sessionStorage.getItem('romanticWebsiteViewCount');
+            if (viewCount) {
+                viewCount = parseInt(viewCount) + 1;
+            } else {
+                viewCount = 1;
+            }
+            sessionStorage.setItem('romanticWebsiteViewCount', viewCount);
+            
+            const viewCountElement = document.getElementById('view-count');
+            if (viewCountElement) {
+                viewCountElement.textContent = viewCount.toLocaleString();
+            }
+
+            // --- 3. Video Unmute Setup ---
+            // The video starts muted (mute=1 in the URL) to ensure autoplay works.
+            // We need to use the YouTube IFrame Player API to control the video.
+            // Since this is a single file, we'll implement a basic iframe interaction.
+        });
+
+        // --- 4. Unmute Function ---
+        let player;
+        
+        function onYouTubeIframeAPIReady() {
+            // This function is called automatically when the API script loads
+            player = new YT.Player('bgVideo', {
+                events: {
+                    'onReady': onPlayerReady
+                }
+            });
+        }
+
+        function onPlayerReady(event) {
+            // Video is ready to be controlled
+            // Note: The embed URL already handles autoplay/loop, this is just for control
+            console.log("YouTube player ready.");
+        }
+
+        // Global function to be called by the Unmute button
+        function unmuteVideo() {
+            const unmuteContainer = document.getElementById('unmute-container');
+            const bgVideo = document.getElementById('bgVideo');
+
+            if (bgVideo.contentWindow) {
+                // Send a postMessage to the iframe to try and unmute it
+                // This is a common way to communicate with embedded YouTube players
+                bgVideo.contentWindow.postMessage('{"event":"command","func":"unMute","args":""}', '*');
+                
+                // Hide the unmute button
+                unmuteContainer.classList.add('hidden');
+                console.log("Attempted to unmute video via postMessage.");
+
+                // Alternative method: If the IFrame API is loaded, use the player object
+                if (window.player && window.player.unMute) {
+                    player.unMute();
+                    unmuteContainer.classList.add('hidden');
+                }
+            }
+        }
+        
+        // Load the YouTube IFrame Player API asynchronously
+        const tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        const firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+    </script>
+</body>
+</html>
+
